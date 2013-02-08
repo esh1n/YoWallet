@@ -14,19 +14,13 @@
                 android:layout_height="match_parent"
                 android:id="@+id/spnPerson"
                 android:entries="@array/persons" android:layout_gravity="center_horizontal|top"
-                android:layout_marginTop="0dp" android:layout_marginBottom="5dp" android:layout_marginRight="30dp"/>
-        <Button
-                android:layout_width="match_parent"
+                android:layout_marginTop="0dp" android:layout_marginRight="50dp"/>
+        <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/btnCalculate" android:layout_gravity="center" android:background="@drawable/btn_selector"
-                android:layout_weight="1" android:singleLine="false"
-                />
-        <Button
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/button" android:layout_gravity="center_horizontal|top"
-                android:background="@drawable/btn_style2" android:layout_weight="1" android:layout_marginLeft="50dp"
-                android:layout_marginRight="0dp"/>
+                android:text="7 days"
+                android:id="@+id/tvResult" android:layout_gravity="center" android:textStyle="bold"
+                android:textSize="30dp" android:typeface="serif" android:textColor="#fcfdff"/>
     </LinearLayout>
     <LinearLayout
             android:orientation="vertical"
