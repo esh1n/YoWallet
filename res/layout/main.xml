@@ -34,5 +34,11 @@
                 android:drawableLeft="@drawable/plus" android:background="@drawable/btn_yellow"
                 android:layout_margin="3dp" android:textColor="@android:color/background_dark" android:textSize="20dp"
                 android:typeface="monospace"/>
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="рублей"
+                android:id="@+id/tvRemainder" android:layout_gravity="center" android:textColor="#1a3ed0"
+                android:textSize="20dp" android:visibility="invisible"/>
     </LinearLayout>
 </LinearLayout>
