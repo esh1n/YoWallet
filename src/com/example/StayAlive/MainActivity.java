@@ -2,7 +2,9 @@ package com.example.StayAlive;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -25,9 +27,8 @@ public class MainActivity extends Activity implements View.OnClickListener
     final int MENU_BALANCE_ID=3;
     TextView tvResult,tvRemainder;
     Button btnAdd;
-    Calendar calendar;
-    Calendar calendar2;
     PersonalBankLogic bankLogic;
+    SharedPreferences settingsScreen;
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -64,8 +65,16 @@ public class MainActivity extends Activity implements View.OnClickListener
             public void onNothingSelected(AdapterView<?> arg0) {
             }
         });
-    }
 
+
+
+        settingsScreen= PreferenceManager.getDefaultSharedPreferences(this);
+    }
+    protected void onResume() {
+        String listValue = settingsScreen.getString("list", "не выбрано");
+        Toast.makeText(this,"Значение списка - " + listValue,Toast.LENGTH_SHORT).show();
+        super.onResume();
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -120,15 +129,15 @@ public class MainActivity extends Activity implements View.OnClickListener
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // TODO Auto-generated method stub
-        StringBuilder sb = new StringBuilder();
+        if(item.getTitle().equals("Настройки"))
+        {
+           /* StringBuilder sb = new StringBuilder();
+            sb.append("\r\n itemId: "  + String.valueOf(item.getItemId()));
+            sb.append("\r\n title: "   + item.getTitle());
+            Toast.makeText(this,sb.toString(),Toast.LENGTH_SHORT).show();*/
+            startActivityForResult(new Intent(this, PrefActivity.class),1);
 
-        // Выведем в TextView информацию о нажатом пункте меню
-
-        sb.append("\r\n itemId: "  + String.valueOf(item.getItemId()));
-
-        sb.append("\r\n title: "   + item.getTitle());
-        Toast.makeText(this,sb.toString(),Toast.LENGTH_SHORT).show();
+        }
         return super.onOptionsItemSelected(item);
     }
     // обновление меню

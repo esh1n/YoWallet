@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+        xmlns:android="http://schemas.android.com/apk/res/android">
+    <CheckBoxPreference
+            android:key="pizza"
+            android:summary="Пицца после тенниса"
+            android:title="Пицца">
+    </CheckBoxPreference>
+    <ListPreference
+            android:entries="@array/transportToHome"
+            android:entryValues="@array/transportToHome"
+            android:key="way"
+            android:summary="На чем ехать домой"
+            android:title="Транспорт до Дома">
+    </ListPreference>
+    <CheckBoxPreference
+            android:key="inet"
+            android:summary="Нужно ли оплатить интернет"
+            android:title="Интернет">
+    </CheckBoxPreference>
+    <CheckBoxPreference
+            android:key="salve"
+            android:summary="Нужно ли купить мазь"
+            android:title="Мазь">
+    </CheckBoxPreference>
+    <EditTextPreference
+            android:key="addExpense"
+            android:summary=""
+            android:inputType="numberDecimal"
+            android:title="Дополнительные траты">
+    </EditTextPreference>
+</PreferenceScreen>
