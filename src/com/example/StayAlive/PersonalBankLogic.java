@@ -5,6 +5,11 @@ import java.util.*;
 
 public class PersonalBankLogic {
 
+    public int getCurrentBalance() {
+        return currentBalance;
+    }
+
+    public  enum BankOperation{Deposit,WithDraw,Reserve}
     private  final int UNIVERSITY_FOOD =150;
     private final  int BUS_VRN =11;
     private final  int BUS_LIPETSK =12;
@@ -17,6 +22,7 @@ public class PersonalBankLogic {
     final int BUS_TO_HOME =179;
     private final int BREAD =12;
     private final int MINIMAL_BALANCE=150;
+    private final int MAXIMUM_ON_PIZZA=300;
     private final int PIZZA=100;
     final  String[] vacationDays={"Saturday","Sunday","Thursday"};
     final String[] trainingDays={"Saturday","Monday","Wednesday"};
@@ -29,7 +35,7 @@ public class PersonalBankLogic {
     private  int homeDay=2* KEFIR + BREAD +50;
     int currentBalance;
     private int reminder;
-
+    private int reserve=0;
 
     Calendar calendar;
 
@@ -47,7 +53,7 @@ public class PersonalBankLogic {
         //int additional
         additionalSpend+=isInternetExist?0: INTERNET ;
         additionalSpend+=isSalveExist?0: SALVE;
-
+        additionalSpend+=isPizzaAfterTennis?MAXIMUM_ON_PIZZA:0;
         int costRideToHome=isGoHomeByTrain? TransportToHomeByTrain:TransportToHomeByBus;
 
         balance-=(costRideToHome+additionalSpend+CLEANING_WOMAN);
@@ -56,7 +62,7 @@ public class PersonalBankLogic {
         {
              currentDayOfWeek = dayWeek(currentCalendar);
              expenseToday=isHomeDay(currentDayOfWeek)?homeDay:studyDay;
-             expenseToday+=(isTrainingDay(currentDayOfWeek)&&isPizzaAfterTennis)?PIZZA:0;
+             // expenseToday+=(isTrainingDay(currentDayOfWeek)&&isPizzaAfterTennis)?PIZZA:0;
              balance-=expenseToday;
              currentCalendar.add(Calendar.DAY_OF_MONTH, 1);
 
@@ -67,9 +73,24 @@ public class PersonalBankLogic {
         reminder=balance;
         return  countDaysToBeProvided;
     }
+    public int getRemainder() {
+        return reminder;
+    }
+    public void AddOperation(int summa,String bankOperation)
+    {
+        if (bankOperation.equals("Вклад"))
+            currentBalance+=summa;
+        if (bankOperation.equals("Отложить на запас"))
+        {
+            currentBalance-=summa;
+            reserve+=summa;
+        }
+        if (bankOperation.equals("Снять"))
+            currentBalance-=summa;
 
 
-    public static String dayWeek(Calendar calendar)
+    }
+    private String dayWeek(Calendar calendar)
     {
         return calendar.getDisplayName(Calendar.DAY_OF_WEEK,Calendar.LONG,Locale.ENGLISH);
     }
@@ -110,7 +131,5 @@ public class PersonalBankLogic {
         return (int) (l / (24 * 60 * 60 * 1000));
     }
 
-    public int getRemainder() {
-        return reminder;
-    }
+
 }

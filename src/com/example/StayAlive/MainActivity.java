@@ -1,6 +1,7 @@
 package com.example.StayAlive;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.Menu;
@@ -8,9 +9,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.Button;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.*;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -20,8 +19,10 @@ import java.util.GregorianCalendar;
 public class MainActivity extends Activity implements View.OnClickListener
 {
     /** Called when the activity is first created. */
+    String[] persons={"Сергей","Арсен","Катя","Женя"};
     final int MENU_ALPHA_ID = 1;
     final int MENU_REMAINDER_ID = 2;
+    final int MENU_BALANCE_ID=3;
     TextView tvResult,tvRemainder;
     Button btnAdd;
     Calendar calendar;
@@ -37,17 +38,35 @@ public class MainActivity extends Activity implements View.OnClickListener
         tvResult=(TextView)findViewById(R.id.tvResult);
         tvRemainder=(TextView)findViewById(R.id.tvRemainder);
         registerForContextMenu(tvResult);
-        Date aDate = new Date(System.currentTimeMillis());
 
-        calendar = GregorianCalendar.getInstance();
-        calendar.setTime(aDate);
-        calendar2 = GregorianCalendar.getInstance();
-        calendar2.setTime(new Date(System.currentTimeMillis()));
         bankLogic=new PersonalBankLogic(3000);
         int countOfDays=bankLogic.calculateCountOfDaysToLive(true,true,true,true,500);
-        tvResult.setText(String.valueOf(countOfDays)+ " days");
+        tvResult.setText(String.valueOf(countOfDays)+ " дней");
 
+        // ???????
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, persons);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        Spinner spinner = (Spinner) findViewById(R.id.spnPerson);
+        spinner.setAdapter(adapter);
+        // ?????????
+        spinner.setPrompt("Persons");
+        // ???????? ???????
+        spinner.setSelection(0);
+        // ????????????? ?????????? ???????
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view,
+                                       int position, long id) {
+                // ?????????? ??????? ???????? ????????
+               // Toast.makeText(getBaseContext(), "Position = " + position, Toast.LENGTH_SHORT).show();
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> arg0) {
+            }
+        });
     }
+
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_default, menu);
@@ -61,6 +80,7 @@ public class MainActivity extends Activity implements View.OnClickListener
             case R.id.tvResult:
                 // добавляем пункты
                 menu.add(0, MENU_ALPHA_ID, 0, "Refresh");
+                menu.add(0,MENU_BALANCE_ID,0,"Display Balance");
                 menu.add(0, MENU_REMAINDER_ID, 0, "Check Remainder");
                 break;
         }
@@ -71,9 +91,9 @@ public class MainActivity extends Activity implements View.OnClickListener
         Animation  animation= AnimationUtils.loadAnimation(this, R.anim.myalpha);
         switch (item.getItemId()){
             case MENU_ALPHA_ID:
+
                 int countOfDays=bankLogic.calculateCountOfDaysToLive(true,true,true,true,500);
-                tvResult.setText(String.valueOf(countOfDays)+ " days");
-                tvResult.startAnimation(animation);
+                displayDays(countOfDays);
                 break;
 
             case MENU_REMAINDER_ID:
@@ -85,6 +105,11 @@ public class MainActivity extends Activity implements View.OnClickListener
                 tvRemainder.startAnimation(animation);
                 tvRemainder.setVisibility(View.INVISIBLE);   */
                 Toast.makeText(this,messageAboutRemainder,Toast.LENGTH_SHORT).show();
+                break;
+            case MENU_BALANCE_ID:
+                int balance=bankLogic.getCurrentBalance();
+                String messageAboutBalance="Ваш текщий баланс составляет "+String.valueOf(balance) +"руб.";
+                Toast.makeText(this,messageAboutBalance,Toast.LENGTH_SHORT).show();
                 break;
 
         }
@@ -115,34 +140,37 @@ public class MainActivity extends Activity implements View.OnClickListener
         return super.onPrepareOptionsMenu(menu);
     }
 
-      private int cool(int i)
-      {
-          int i1=3,i2=4;
 
-          return i-=(i1+i2);
-      }
     @Override
     public void onClick(View view) {
         switch (view.getId())
         {
             case  (R.id.btnAdd):
 
-
-                calendar2.add(Calendar.DAY_OF_MONTH, 1);
-                calendar.setTime(new Date(System.currentTimeMillis()));
-                SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy hh:mm:ss");
-                String dayOfWeek= calendar2.getDisplayName(Calendar.DAY_OF_WEEK,Calendar.LONG,java.util.Locale.ENGLISH);
-
-                Toast.makeText(this,dayOfWeek+String.valueOf(cool(7)),Toast.LENGTH_SHORT).show();
-
-                Toast.makeText(this,formatter.format(calendar2.getTime()),Toast.LENGTH_SHORT).show();
-                Toast.makeText(this,formatter.format(calendar.getTime()),Toast.LENGTH_SHORT).show();
-               // long DaysLeft= getDays(calendar.getTime(),calendar2.getTime());
-
-              //  Toast.makeText(this,"Days left are "+String.valueOf(DaysLeft) ,Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(this, OperationActivity.class);
+                startActivityForResult(intent, 1);
                 break;
 
         }
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (data == null) {return;}
+        int summa = data.getIntExtra("summa",-1);
+        String operation=data.getStringExtra("operation");
+        Toast.makeText(this,"Операция '"+ operation+ "' на сумму "+String.valueOf(summa)+" проведена успешно.",Toast.LENGTH_SHORT).show();
+
+        bankLogic.AddOperation(summa,operation);
+        int countOfDays=bankLogic.calculateCountOfDaysToLive(true,true,true,true,500);
+        displayDays(countOfDays);
+
+
+    }
+    private void displayDays(int countOfDays)
+    {
+        Animation  animation= AnimationUtils.loadAnimation(this, R.anim.myalpha);
+        tvResult.setText(String.valueOf(countOfDays)+ " days");
+        tvResult.startAnimation(animation);
     }
 }          /*Calendar calendar = GregorianCalendar.getInstance();
 calendar.set(Calendar.MONTH, 10);
