@@ -6,24 +6,28 @@ import java.util.*;
 public class PersonalBankLogic {
 
     private int RideOnBusOnBothEnds,
-            eveningFood,
-            TransportToHomeByTrain,
-            TransportToHomeByBus,
-            universityDay,
-            studyDay,
-            homeDay;
-
+                eveningFood,
+                TransportToHomeByTrain,
+                TransportToHomeByBus,
+                universityDay,
+                studyDay,
+                homeDay;
+    private int currentBalance;
+    private int reminder;
+    private int reserve = 0;
+    Calendar calendar;
+    private boolean isNeedInternet,isPizzaAfterTennis,isNeedSalve,isToHomeByTrain;
+    private int addExpence;
     public int getCurrentBalance() {
         return currentBalance;
     }
 
-    int currentBalance;
-    private int reminder;
-    private int reserve = 0;
 
-    Calendar calendar;
+
+
 
     public PersonalBankLogic(int incomingMoney) {
+        initDefaultSettings();
         setCostOfInputs();
         currentBalance = incomingMoney;
         calendar = getCalendar();
@@ -57,8 +61,28 @@ public class PersonalBankLogic {
         reminder = balance;
         return countDaysToBeProvided;
     }
+    public void setCurrentBalance(int currentBalance)
+    {
+        this.currentBalance=currentBalance;
+    }
+    private void initDefaultSettings()
+    {
+        isNeedInternet=isNeedSalve=isPizzaAfterTennis=false;
+        isToHomeByTrain=true;
+        addExpence=400;
+    }
+    public void updateSettings(boolean isPizzaAfterTennis, boolean isGoHomeByTrain, boolean isNeedInternet, boolean isNeedSalve, int additionalSpend){
+        this.isNeedInternet=isNeedInternet;
+        this.isNeedSalve=isNeedSalve;
+        this.isToHomeByTrain=isGoHomeByTrain;
+        this.isPizzaAfterTennis=isPizzaAfterTennis;
+        this.addExpence=additionalSpend;
+    }
+    public int calculateCountOfDaysToLive() {
+       return calculateCountOfDaysToLive(isPizzaAfterTennis,isToHomeByTrain,isNeedInternet,isNeedSalve,addExpence);
+    }
 
-    public int getRemainder() {
+        public int getRemainder() {
         return reminder;
     }
 
