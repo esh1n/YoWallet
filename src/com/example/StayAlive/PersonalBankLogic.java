@@ -5,35 +5,18 @@ import java.util.*;
 
 public class PersonalBankLogic {
 
+    private int RideOnBusOnBothEnds,
+            eveningFood,
+            TransportToHomeByTrain,
+            TransportToHomeByBus,
+            universityDay,
+            studyDay,
+            homeDay;
+
     public int getCurrentBalance() {
         return currentBalance;
     }
 
-    public enum BankOperation {Deposit, WithDraw, Reserve}
-
-    private final int UNIVERSITY_FOOD = 150;
-    private final int BUS_VRN = 11;
-    private final int BUS_LIPETSK = 12;
-    private final int BUS_106 = 19;
-    private final int KEFIR = 39;
-    private final int CLEANING_WOMAN = 60;
-    private final int INTERNET = 300;
-    private final int SALVE = 350;
-    final int TRAIN_TO_HOME = 71;
-    final int BUS_TO_HOME = 179;
-    private final int BREAD = 12;
-    private final int MINIMAL_BALANCE = 150;
-    private final int MAXIMUM_ON_PIZZA = 300;
-    private final int PIZZA = 100;
-    final String[] vacationDays = {"Saturday", "Sunday", "Thursday"};
-    final String[] trainingDays = {"Saturday", "Monday", "Wednesday"};
-    private int RideOnBusOnBothEnds = 2 * BUS_VRN;
-    private int eveningFood = BREAD + KEFIR;
-    private int TransportToHomeByTrain = RideOnBusOnBothEnds + TRAIN_TO_HOME + BUS_106;
-    private int TransportToHomeByBus = BUS_TO_HOME + BUS_LIPETSK * 2 + BUS_VRN;
-    private int universityDay = (UNIVERSITY_FOOD + RideOnBusOnBothEnds);
-    private int studyDay = universityDay + eveningFood;
-    private int homeDay = 2 * KEFIR + BREAD + 50;
     int currentBalance;
     private int reminder;
     private int reserve = 0;
@@ -41,6 +24,7 @@ public class PersonalBankLogic {
     Calendar calendar;
 
     public PersonalBankLogic(int incomingMoney) {
+        setCostOfInputs();
         currentBalance = incomingMoney;
         calendar = getCalendar();
     }
@@ -52,12 +36,12 @@ public class PersonalBankLogic {
         int balance = currentBalance;
         Calendar currentCalendar = getCalendar();
         //int additional
-        additionalSpend += isNeedInternet ? INTERNET : 0;
-        additionalSpend += isNeedSalve ? SALVE : 0;
-        additionalSpend += isPizzaAfterTennis ? MAXIMUM_ON_PIZZA : 0;
+        additionalSpend += isNeedInternet ? Data.INTERNET : 0;
+        additionalSpend += isNeedSalve ? Data.SALVE : 0;
+        additionalSpend += isPizzaAfterTennis ? Data.MAXIMUM_ON_PIZZA : 0;
         int costRideToHome = isGoHomeByTrain ? TransportToHomeByTrain : TransportToHomeByBus;
 
-        balance -= (costRideToHome + additionalSpend + CLEANING_WOMAN);
+        balance -= (costRideToHome + additionalSpend + Data.CLEANING_WOMAN);
 
         do {
             currentDayOfWeek = dayWeek(currentCalendar);
@@ -66,7 +50,7 @@ public class PersonalBankLogic {
             balance -= expenseToday;
             currentCalendar.add(Calendar.DAY_OF_MONTH, 1);
 
-        } while (balance > MINIMAL_BALANCE);
+        } while (balance > Data.MINIMAL_BALANCE);
 
         calendar.setTime(new Date(System.currentTimeMillis()));
         int countDaysToBeProvided = calculateCountDaysBetweenDates(calendar.getTime(), currentCalendar.getTime());
@@ -96,7 +80,7 @@ public class PersonalBankLogic {
     }
 
     private boolean isHomeDay(String currentDay) {
-        return (Arrays.asList(vacationDays).contains(currentDay));
+        return (Arrays.asList(Data.vacationDays).contains(currentDay));
 
     }
 
@@ -108,8 +92,18 @@ public class PersonalBankLogic {
     }
 
     private boolean isTrainingDay(String currentDay) {
-        return (Arrays.asList(trainingDays).contains(currentDay));
+        return (Arrays.asList(Data.trainingDays).contains(currentDay));
 
+    }
+
+    private void setCostOfInputs() {
+        RideOnBusOnBothEnds = 2 * Data.BUS_VRN;
+        eveningFood = Data.BREAD + Data.KEFIR;
+        TransportToHomeByTrain = RideOnBusOnBothEnds + Data.TRAIN_TO_HOME + Data.BUS_106;
+        TransportToHomeByBus = Data.BUS_TO_HOME + Data.BUS_LIPETSK * 2 + Data.BUS_VRN;
+        universityDay = (Data.UNIVERSITY_FOOD + RideOnBusOnBothEnds);
+        studyDay = universityDay + eveningFood;
+        homeDay = 2 * Data.KEFIR + Data.BREAD + 50;
     }
 
     private int calculateCountDaysBetweenDates(Date start, Date end) {
