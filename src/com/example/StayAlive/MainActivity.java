@@ -6,6 +6,7 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -16,6 +17,8 @@ import android.widget.*;
 
 public class MainActivity extends Activity implements View.OnClickListener, SharedPreferences.OnSharedPreferenceChangeListener {
 
+    private static final int MENU_HELP_ID = 4;
+    private static final int DANGER_COUNT_DAYS_TO_LIVE = 3;
     String[] persons = {"Сергей", "Арсен", "Катя", "Женя"};
     int btn;
     final int REQUEST_CODE_OPERATION = 1;
@@ -108,10 +111,7 @@ public class MainActivity extends Activity implements View.OnClickListener, Shar
         super.onPrepareDialog(id, dialog);
 
     }
-    public void onclick(View v) {
-      //  btn = v.getId();
 
-    }
 
     protected void onResume() {
 
@@ -140,6 +140,9 @@ public class MainActivity extends Activity implements View.OnClickListener, Shar
                 menu.add(0, MENU_BALANCE_NEW_ID, 0, "Обновить баланс");
                 menu.add(0, MENU_BALANCE_VIEW_ID, 0, "Показать баланс");
                 menu.add(0, MENU_REMAINDER_ID, 0, "Показать остаток");
+                int countOfDays=bankLogic.calculateCountOfDaysToLive();
+                if (countOfDays<=DANGER_COUNT_DAYS_TO_LIVE)
+                menu.add(0, MENU_HELP_ID, 0, "Что делать,если нечего есть?");
                 break;
         }
         super.onCreateContextMenu(menu, v, menuInfo);
@@ -168,6 +171,10 @@ public class MainActivity extends Activity implements View.OnClickListener, Shar
                 int balance = bankLogic.getCurrentBalance();
                 String messageAboutBalance = "Ваш текщий баланс составляет " + String.valueOf(balance) + "руб.";
                 Toast.makeText(this, messageAboutBalance, Toast.LENGTH_SHORT).show();
+                break;
+            case MENU_HELP_ID:
+                Intent intent = new Intent(this, HelpActivity.class);
+                startActivity(intent);
                 break;
 
         }
@@ -231,7 +238,10 @@ public class MainActivity extends Activity implements View.OnClickListener, Shar
 
     private void displayDays(int countOfDays) {
         Animation animation = AnimationUtils.loadAnimation(this, R.anim.myalpha);
+        int color=Color.WHITE;
+        if (countOfDays<=DANGER_COUNT_DAYS_TO_LIVE)color=Color.RED;
         tvResult.setText(String.valueOf(countOfDays) + " days");
+        tvResult.setTextColor(color);
         tvResult.startAnimation(animation);
     }
 
@@ -253,23 +263,5 @@ public class MainActivity extends Activity implements View.OnClickListener, Shar
         bankLogic.updateSettings(isPizzaAfterTennis, isWayByTrain, isNeedInternet, isNeedSalve, expense);
         int countOfDays = bankLogic.calculateCountOfDaysToLive();
         displayDays(countOfDays);
-       /* String messageVerify=wayToHome+
-                " Pizza ->"+String.valueOf(isPizzaAfterTennis)+
-                " Spend -> "+String.valueOf(expense)+
-                " isNeedSalve "+String.valueOf(isNeedSalve)+
-                "isByTrain->"+String.valueOf(isWayByTrain)+
-                "isNeedInternet->"+String.valueOf(isNeedInternet);
-
-        Toast.makeText(this,messageVerify,Toast.LENGTH_LONG).show();   */
-
-
     }
-}          /*Calendar calendar = GregorianCalendar.getInstance();
-calendar.set(Calendar.MONTH, 10);
-calendar.set(Calendar.DAY_OF_MONTH, 15);
-calendar.set(Calendar.YEAR, 2005);
-formatter = new SimpleDateFormat("MMM dd, yyyy");
-System.out.println("Before: " + formatter.format(calendar.getTime()));
-
-calendar.add(Calendar.DAY_OF_MONTH, 20);
-System.out.println("After: " + formatter.format(calendar.getTime()));*/
+}
