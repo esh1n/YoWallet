@@ -7,9 +7,15 @@
     <string name="menu_settings">Настройки</string>
     <string name="menu_delete">Удалить</string>
     <string name="menu_search">Поиск</string>
+    <string name="default_WayToHome">На электричке</string>
+    <string name="default_mode">Учеба</string>
     <string-array name="transportToHome">
         <item>На электричке</item>
         <item>На автобусе</item>
+    </string-array>
+    <string-array name="modeOfLife">
+        <item>Учеба</item>
+        <item>Каникулы</item>
     </string-array>
     <string-array name="entry_values">
         <item>1</item>

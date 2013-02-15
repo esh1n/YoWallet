@@ -44,11 +44,9 @@ public class MainActivity extends Activity implements View.OnClickListener, Shar
         tvRemainder = (TextView) findViewById(R.id.tvRemainder);
         registerForContextMenu(tvResult);
 
-        bankLogic = new PersonalBankLogic(3000);
-        int countOfDays = bankLogic.calculateCountOfDaysToLive();
-        tvResult.setText(String.valueOf(countOfDays) + " дней");
+        bankLogic = new PersonalBankLogic();
+        updateUserSettings();
 
-        // ???????
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, persons);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         Spinner spinner = (Spinner) findViewById(R.id.spnPerson);
@@ -93,7 +91,7 @@ public class MainActivity extends Activity implements View.OnClickListener, Shar
                                 // edit text
                                 int newBalance=Integer.parseInt(userInput.getText().toString());
                                 bankLogic.setCurrentBalance(newBalance);
-                                int countOfDays = bankLogic.calculateCountOfDaysToLive();
+                                 int countOfDays = bankLogic.calculateCountOfDaysToLive();
                                 displayDays(countOfDays);
 
                             }
@@ -112,7 +110,13 @@ public class MainActivity extends Activity implements View.OnClickListener, Shar
 
     }
 
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        int balance= bankLogic.getCurrentBalance();
+        Toast.makeText(this,String.valueOf(balance),Toast.LENGTH_LONG).show();
+        saveBalanceInPrefences(balance);
+    }
     protected void onResume() {
 
         super.onResume();
@@ -253,15 +257,31 @@ public class MainActivity extends Activity implements View.OnClickListener, Shar
     private void updateUserSettings() {
         SharedPreferences sharedPrefs = PreferenceManager
                 .getDefaultSharedPreferences(this);
+        String StrBalance = sharedPrefs.getString("balance", "3000");
+        int balance = Integer.parseInt(StrBalance);
+        bankLogic.setCurrentBalance(balance);
+
         Boolean isPizzaAfterTennis = sharedPrefs.getBoolean("pizza", false);
         Boolean isNeedInternet = sharedPrefs.getBoolean("inet", false);
         Boolean isNeedSalve = sharedPrefs.getBoolean("salve", false);
         String additionalExpenses = sharedPrefs.getString("addExpense", "120");
         int expense = Integer.parseInt(additionalExpenses);
         String wayToHome = sharedPrefs.getString("way", "не выбрано");
+        String lifeMode=sharedPrefs.getString("lifeMode","не выбрано");
         boolean isWayByTrain = wayToHome.equals("На электричке");
-        bankLogic.updateSettings(isPizzaAfterTennis, isWayByTrain, isNeedInternet, isNeedSalve, expense);
+
+        bankLogic.updateSettings(isPizzaAfterTennis, isWayByTrain, isNeedInternet, isNeedSalve, expense,lifeMode);
         int countOfDays = bankLogic.calculateCountOfDaysToLive();
+
         displayDays(countOfDays);
+    }
+
+    private void saveBalanceInPrefences(int balance)
+    {
+        SharedPreferences sharedPrefs = PreferenceManager
+                .getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = sharedPrefs.edit();
+        editor.putString("balance", String.valueOf(balance));
+        editor.commit();
     }
 }

@@ -18,6 +18,7 @@ public class PersonalBankLogic {
     Calendar calendar;
     private boolean isNeedInternet,isPizzaAfterTennis,isNeedSalve,isToHomeByTrain;
     private int addExpence;
+    private String lifeMode;
     public int getCurrentBalance() {
         return currentBalance;
     }
@@ -27,12 +28,19 @@ public class PersonalBankLogic {
 
 
     public PersonalBankLogic(int incomingMoney) {
-        initDefaultSettings();
+       // initDefaultSettings();
         setCostOfInputs();
         currentBalance = incomingMoney;
         calendar = getCalendar();
     }
-
+    public PersonalBankLogic() {
+        setCostOfInputs();
+        calendar = getCalendar();
+    }
+    public void setCurrentBalance(int currentBalance)
+    {
+        this.currentBalance=currentBalance;
+    }
     public int calculateCountOfDaysToLive(boolean isPizzaAfterTennis, boolean isGoHomeByTrain, boolean isNeedInternet, boolean isNeedSalve, int additionalSpend) {
         //init
         String currentDayOfWeek;
@@ -61,22 +69,20 @@ public class PersonalBankLogic {
         reminder = balance;
         return countDaysToBeProvided;
     }
-    public void setCurrentBalance(int currentBalance)
-    {
-        this.currentBalance=currentBalance;
-    }
+
     private void initDefaultSettings()
     {
         isNeedInternet=isNeedSalve=isPizzaAfterTennis=false;
         isToHomeByTrain=true;
         addExpence=400;
     }
-    public void updateSettings(boolean isPizzaAfterTennis, boolean isGoHomeByTrain, boolean isNeedInternet, boolean isNeedSalve, int additionalSpend){
+    public void updateSettings(boolean isPizzaAfterTennis, boolean isGoHomeByTrain, boolean isNeedInternet, boolean isNeedSalve, int additionalSpend,String lifeMode){
         this.isNeedInternet=isNeedInternet;
         this.isNeedSalve=isNeedSalve;
         this.isToHomeByTrain=isGoHomeByTrain;
         this.isPizzaAfterTennis=isPizzaAfterTennis;
         this.addExpence=additionalSpend;
+        this.lifeMode=lifeMode;
     }
     public int calculateCountOfDaysToLive() {
        return calculateCountOfDaysToLive(isPizzaAfterTennis,isToHomeByTrain,isNeedInternet,isNeedSalve,addExpence);
